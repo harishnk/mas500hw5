@@ -1,11 +1,11 @@
 #include "testApp.h"
 
-#define NUM_POINTS 10
-#define BOUNCE_FACTOR 0.5
+#define NUM_POINTS 50
+#define BOUNCE_FACTOR 0.8
 #define ACCELEROMETER_FORCE 0.2
-#define RADIUS 30
+#define RADIUS 50
 
-class Thing {
+class BouncingBalls {
 public:
     ofPoint pos;
     ofPoint vel;
@@ -23,7 +23,7 @@ public:
     
     void update() {
         vel.x += ACCELEROMETER_FORCE * ofxAccelerometer.getForce().x * ofRandomuf();
-        vel.y += -ACCELEROMETER_FORCE * ofxAccelerometer.getForce().y * ofRandomuf(); // this one is subtracted cos world Y is opposite to opengl Y
+        vel.y += -ACCELEROMETER_FORCE * ofxAccelerometer.getForce().y * ofRandomuf();
         
         // add vel to pos
         pos += vel;
@@ -48,7 +48,7 @@ public:
     
     void draw() {
         ofSetColor(col.r, col.g, col.b, col.a);
-        ofCircle(pos.x, pos.y, 30);
+        ofCircle(pos.x, pos.y, 10);
     }
     
     void moveTo(int x, int y) {
@@ -57,32 +57,31 @@ public:
     }
 };
 
-Thing things[NUM_POINTS];
+BouncingBalls bouncingBalls[NUM_POINTS];
 
 //--------------------------------------------------------------
 void testApp::setup(){	
-    ofBackground(255, 255, 255); // set background to black
-    ofSetBackgroundAuto(true); // set background to clear automatically every frame
-    ofSetFrameRate(60); // set desired framerate to 60fps
+    ofBackground(255, 255, 255); // set background
+    ofSetBackgroundAuto(true); // automatically clear background
+    ofSetFrameRate(60); // set desired framerate
     
-    // initialize the accelerometer
     ofxAccelerometer.setup();
     
-    // touch events will be sent to this object (this instance of testApp)
+    // touch events listener
     ofxMultiTouch.addListener(this);
     
-    // initialize all of the Thing particles
-    for(int i=0; i<NUM_POINTS; i++) things[i].init();
+    // initialize all of the Balls particles
+    for(int i=0; i<NUM_POINTS; i++) bouncingBalls[i].init();
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-    for(int i=0; i<NUM_POINTS; i++) things[i].update();
+    for(int i=0; i<NUM_POINTS; i++) bouncingBalls[i].update();
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
-	for(int i=0; i<NUM_POINTS; i++) things[i].draw();
+	for(int i=0; i<NUM_POINTS; i++) bouncingBalls[i].draw();
 }
 
 //--------------------------------------------------------------
@@ -92,12 +91,12 @@ void testApp::exit(){
 
 //--------------------------------------------------------------
 void testApp::touchDown(ofTouchEventArgs & touch){
-    things[touch.id].moveTo(touch.x, touch.y);
+    bouncingBalls[touch.id].moveTo(touch.x, touch.y);
 }
 
 //--------------------------------------------------------------
 void testApp::touchMoved(ofTouchEventArgs & touch){
-    things[touch.id].moveTo(touch.x, touch.y);
+    bouncingBalls[touch.id].moveTo(touch.x, touch.y);
 }
 
 //--------------------------------------------------------------
